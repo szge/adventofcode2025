@@ -4,3 +4,5 @@ project(adventofcode2025)
 set(CMAKE_CXX_STANDARD 26)
 
 add_executable(adventofcode2025 main.cpp)
+add_executable(day1a day1/solution1.cpp)
+add_executable(day1b day1/solution2.cpp)
