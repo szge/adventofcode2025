@@ -38,16 +38,31 @@ constexpr long long pow10[] = {
 
 bool isNumInvalid(const long long num) {
     const int digits = numDigits(num);
-    if (digits % 2) return false; // odd lengths are always valid
-    const long long first_half = num / pow10[digits / 2];
-    const long long second_half = num % pow10[digits / 2];
-    return first_half == second_half;
+    for (int seqLen {1}; seqLen <= digits / 2; seqLen++) {
+        if (digits % seqLen) continue; // avoids passing cases like 30303, also efficiency
+        long long numClone {num};
+        const long long targetDigits {numClone % pow10[seqLen]};
+        bool allMatching {true};
+        while (numClone > 0) {
+            if (numClone % pow10[seqLen] != targetDigits) {
+                allMatching = false;
+                break;
+            }
+            // reduce numClone
+            numClone /= pow10[seqLen];
+        }
+        if (allMatching) return true;
+    }
+    return false;
 }
 
 long long sumOfInvalidIDs(const long long start, const long long end) {
     long long sum {0};
     for (long long i = start; i <= end; i++) {
-        if (isNumInvalid(i)) sum += i;
+        if (isNumInvalid(i)) {
+            std::cout << "invalid ID found: " << i << "\n";
+            sum += i;
+        }
     }
     return sum;
 }
@@ -69,7 +84,7 @@ int main()
         std::string startStr, endStr;
         std::getline(ss, startStr, '-');
         std::getline(ss, endStr);
-        // std::cout << "start: " << startStr << " end: " << endStr << "\n";
+        std::cout << "start: " << startStr << " end: " << endStr << "\n";
         solution += sumOfInvalidIDs(std::stoll(startStr), std::stoll(endStr));
     }
 
